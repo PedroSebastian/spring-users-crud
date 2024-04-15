@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  users:
+    image: users:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    mem_reservation: 512m
+    ports:
+      - "8080:8080"
+    depends_on:
+      couchbase:
+        condition: service_healthy
+    environment:
+      COUCHBASE_BUCKET: users-bucket
+      COUCHBASE_USER: Administrator
+      COUCHBASE_PASSWORD: password
+
+  couchbase:
+    image: couchbase:latest
+    ports:
+      - "8091-8094:8091-8094"
+      - "11210:11210"
+    environment:
+      COUCHBASE_SERVER_USERNAME: Administrator
+      COUCHBASE_SERVER_PASSWORD: password
+    hostname: couchbase
+    working_dir: /opt/couchbase
+    stdin_open: true
+    tty: true
+    entrypoint: /opt/couchbase/bin/couchbase-server -- -noinput -kernel global_enable_tracing false
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/ui/index.html"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    command: /bin/sh -c '/init-couchbase.sh'
+
+    volumes:
+      - ./init-couchbase.sh:/configure-couchbase.sh
+      - couchbase_data:/opt/couchbase/var
+
+volumes:
+  couchbase_data:

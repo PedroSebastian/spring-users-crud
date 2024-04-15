@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: users
+  threads:
+    virtual:
+      enabled: true
+  couchbase:
+    connection-string: couchbase://localhost
+    username: Administrator
+    password: password
+    bucket-name: users-bucket
+    auto-index: true
+
+server.error.include-message: always
+
+logging:
+  level:
+    root: DEBUG
+
+springdoc:
+  api-docs.path: /openapi/v3/api-docs
+  packagesToScan: com.users
+  pathsToMatch: /**
+  show-actuator: true
+
+api:
+  common:
+    version: 1.0.0
+    title: Simple Users API
+    description: This API is a simple users API that allows you to create, read, update and delete users.
+    termsOfService: BY USING THIS API YOU AGREE TO THE TERMS OF SERVICE
+    license: GNU General Public License v3.0
+    licenseUrl: https://www.gnu.org/licenses/gpl-3.0.html
+
+    contact:
+      name: Pedro Sebastian Zanella Nuñez
+      url: https://www.linkedin.com/in/pedro-sebastian-zanella-nunez/
+      email: pedrosebastian90@gmail.com
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    couchbase:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
