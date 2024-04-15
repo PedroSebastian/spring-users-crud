@@ -1,0 +1,101 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+interface UsersRepository {
+    +findByCpfValue(cpfValue : String) : Optional<User>
+    +findByEmailValue(emailValue : String) : Optional<User>
+    +save(user : User) : User
+}
+
+class UserRegistrationService {
+    -usersRepository : UsersRepository
+    +UserRegistrationService(usersRepository : UsersRepository)
+    +registerUser(user : User) : User
+    -checkIfCpfIsAlreadyRegistered(cpf : CPF) : void
+    -checkIfEmailIsAlreadyRegistered(email : Email) : void
+}
+
+class User {
+    -id : String = UUID.randomUUID().toString()
+    -createdAt : LocalDate
+    -editedAt : LocalDate
+    -birthDate : LocalDate
+    -cpf : CPF
+    -email : Email
+    -name : String
+    -password : String
+    -phone : Phone
+    -address : Address
+    -profile : Profile
+    -active : boolean = true
+    +User(birthDate, cpf, email, phone, address, profile, password, name)
+    +updateProfile(profile : Profile) : void
+    +disableUser() : void
+    +enableUser() : void
+    +updateAddress(address : Address) : void
+    +updatePhone(phone : Phone) : void
+    +changePassword(password : String) : void
+    +updateName(name : String) : void
+    +updateBirthDate(birthDate : LocalDate) : void
+    +getPassword() : String
+    -validateAge() : void
+}
+
+class Profile {
+    -languagePreference : String
+    -themePreference : String
+    -receiveNewsletter : boolean
+    -timeZone : String
+    -bio : String
+}
+
+class Phone {
+    -number : String
+    -areaCode : String
+    -countryCode : String
+}
+
+class Email {
+    -value : String
+    +Email(value : String)
+    +setValue(value : String) : void
+    -isValidEmail(email : String) : boolean
+}
+
+class CPF {
+    -value : String
+    +CPF(value : String)
+    +setValue(value : String) : void
+    -isValidCPF(cpf : String) : boolean
+}
+
+class Address {
+    -street : String
+    -number : String
+    -city : String
+    -state : String
+    -country : String
+    -zipCode : String
+}
+
+class CPFValidator {
+    {static} +isValidCPF(cpf : String) : boolean
+    {static} -calculateDigit(str : String, weights : int[]) : int
+    {static} -hasAllSameDigits(cpf : String) : boolean
+}
+
+UserRegistrationService ..> UsersRepository : uses >
+UserRegistrationService ..> User : uses >
+UserRegistrationService ..> CPF : uses >
+UserRegistrationService ..> Email : uses >
+
+User ..> CPFValidator : uses >
+User ..> Profile : aggregates >
+User ..> Phone : aggregates >
+User ..> Address : aggregates >
+User ..> CPF : aggregates >
+User ..> Email : aggregates >
+
+CPF ..> CPFValidator : uses >
+Email ..> Email : uses >
+@enduml

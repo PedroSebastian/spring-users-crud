@@ -1,15 +1,15 @@
 # Para simplificar o processo, vamos usar o mesmo Dockerfile para contruir e executar. Mas o ideal seria separar em dois arquivos.
 # Etapa de build usando Maven e Eclipse Temurin JDK 22
-FROM maven:3.9.6-eclipse-temurin-22 as build
+FROM maven:3.9.6-eclipse-temurin-22 AS build
 WORKDIR /app
 # Copiar o pom.xml e fontes
 COPY pom.xml .
 COPY src ./src
 # Construir o aplicativo
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 # Etapa de extração para utilizar o layout de camadas
-FROM eclipse-temurin:22-jdk as extract
+FROM eclipse-temurin:22-jdk AS extract
 WORKDIR /extracted
 COPY --from=build /app/target/*.jar app.jar
 RUN java -Djarmode=layertools -jar app.jar extract
