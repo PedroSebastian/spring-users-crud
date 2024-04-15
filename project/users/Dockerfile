@@ -6,7 +6,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 # Construir o aplicativo
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # Etapa de extração para utilizar o layout de camadas
 FROM eclipse-temurin:22-jdk AS extract

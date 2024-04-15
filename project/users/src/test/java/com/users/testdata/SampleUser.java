@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class SampleUser {
 
     public static User createSampleUser() {
-        CPF cpf = new CPF("12345678909");
+        CPF cpf = new CPF("268.094.850-58");
         Email email = new Email("sebastian@email.com");
         Phone phone = new Phone("997318843", "048", "55");
         Address address = new Address(
@@ -39,7 +39,7 @@ public class SampleUser {
         request.setName("Sebastian");
         request.setPassword("my_password_123!!_90!");
         request.setEmail("sebastian@email.com");
-        request.setCpf("12345678909");
+        request.setCpf("268.094.850-58");
         request.setBirthDate(LocalDate.of(1990, 1, 1));  // Data de nascimento
 
         PhoneRequest phone = new PhoneRequest();

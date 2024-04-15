@@ -26,7 +26,6 @@ public class CreateUserRequest {
     private String email;
 
     @NotBlank(message = "CPF is required")
-    @Size(min = 11, max = 11, message = "CPF must be exactly 11 characters")
     private String cpf;
 
     @Past(message = "Birth date must be in the past")
