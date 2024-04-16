@@ -25,21 +25,20 @@ services:
     environment:
       COUCHBASE_SERVER_USERNAME: Administrator
       COUCHBASE_SERVER_PASSWORD: password
+      COUCHBASE_BUCKET: users-bucket
     hostname: couchbase
     working_dir: /opt/couchbase
     stdin_open: true
     tty: true
-    entrypoint: /opt/couchbase/bin/couchbase-server -- -noinput -kernel global_enable_tracing false
+    volumes:
+      - ./configure-couchbase.sh:/opt/couchbase/configure-couchbase.sh
+      - couchbase_data:/opt/couchbase/var
+    entrypoint: [ "/bin/bash", "/opt/couchbase/configure-couchbase.sh" ]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8091/ui/index.html"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8091/ui/index.html" ]
       interval: 10s
       timeout: 5s
       retries: 10
-    command: /bin/sh -c '/init-couchbase.sh'
-
-    volumes:
-      - ./init-couchbase.sh:/configure-couchbase.sh
-      - couchbase_data:/opt/couchbase/var
 
 volumes:
   couchbase_data:

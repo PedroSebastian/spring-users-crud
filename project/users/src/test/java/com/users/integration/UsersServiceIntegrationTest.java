@@ -16,6 +16,8 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.couchbase.BucketDefinition;
 import org.testcontainers.couchbase.CouchbaseContainer;
@@ -24,6 +26,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
 
 @SpringBootTest
 @Testcontainers
@@ -33,8 +36,17 @@ class UsersServiceIntegrationTest {
     @Container
     @ServiceConnection
     static CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:latest")
-            .withCredentials("testuser", "testpassword")
-            .withBucket(new BucketDefinition("test-users-bucket"));
+            .withCredentials("Administrator", "password")
+            .withBucket(new BucketDefinition("users-bucket").withPrimaryIndex(true))
+            .withStartupTimeout(Duration.ofSeconds(30));
+
+    @DynamicPropertySource
+    static void bindCouchbaseProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.couchbase.connection-string", couchbaseContainer::getConnectionString);
+        registry.add("spring.couchbase.username", couchbaseContainer::getUsername);
+        registry.add("spring.couchbase.password", couchbaseContainer::getPassword);
+        registry.add("spring.data.couchbase.bucket-name", () -> "users-bucket");
+    }
 
     @Autowired
     private CouchbaseTemplate couchbaseTemplate;

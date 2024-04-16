@@ -7,7 +7,7 @@ public class CPFValidator {
     }
 
     public static boolean isValidCPF(String cpf) {
-        if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}")) {
+        if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}") && !cpf.matches("\\d{11}")) {
             return false;
         }
 
