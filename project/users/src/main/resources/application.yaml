@@ -5,7 +5,7 @@ spring:
     virtual:
       enabled: true
   couchbase:
-    connection-string: couchbase://localhost
+    connection-string: couchbase://couchbase
     username: Administrator
     password: password
     bucket-name: users-bucket
